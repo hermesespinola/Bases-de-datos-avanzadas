@@ -2,6 +2,7 @@ import copy
 import sets
 import pandas as pd
 import Queue
+from pprint import pprint
 
 tautology = lambda n: True
 identity = lambda n: n
@@ -18,6 +19,9 @@ class Node(object):
     def add_adjacents(self, nodes_uid):
         self.adj += nodes_uid
 
+    def __str__(self):
+        return "{\n\t" + str(self.data).replace('\n', '\n\t') + "\n} -> " + str(self.adj)
+
 class Graph(object):
     """Adjacency list graph."""
     def __init__(self, nodes = {}):
@@ -33,10 +37,10 @@ class Graph(object):
         return uid, node
 
     def add_nodes(self, ids, nodes):
-        nodes.update({uid: node for uid, node in zip(uid, node)})
+        self.nodes.update({uid: node for uid, node in zip(uid, node)})
 
     def get_node(self, uid):
-        return nodes[uid]
+        return self.nodes[uid]
 
     @staticmethod
     def from_csv(nodes_path, edges_path):
@@ -87,3 +91,7 @@ class Graph(object):
                 result.add_node(current_uid, new_node)
 
         return result
+
+def print_graph(graph):
+    for uid, node in graph.nodes.iteritems():
+        print uid, node, '\n'
