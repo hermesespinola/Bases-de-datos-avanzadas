@@ -20,7 +20,8 @@ class Node(object):
         self.adj += nodes_uid
 
     def __str__(self):
-        return "{\n\t" + str(self.data).replace('\n', '\n\t') + "\n} -> " + str(self.adj)
+        return "{\n\t" + str(self.data) \
+            .replace('\n', '\n\t') + "\n} -> " + str(self.adj)
 
 class Graph(object):
     """Adjacency list graph."""
@@ -62,7 +63,8 @@ class Graph(object):
             current_uid = stack.pop()
             current = self.nodes[current_uid]
             if not current_uid in visited:
-                new_adj = [uid for uid in current.adj if node_filter(self.nodes[uid]) and not uid in visited]
+                new_adj = [uid for uid in current.adj \
+                    if node_filter(self.nodes[uid]) and not uid in visited]
                 new_node = node_map(copy.deepcopy(current))
                 new_node.adj = new_adj
                 visited.add(current_uid)
@@ -82,7 +84,8 @@ class Graph(object):
             current_uid = queue.get()
             current = self.nodes[current_uid]
             if not current_uid in visited:
-                new_adj = [uid for uid in current.adj if node_filter(self.nodes[uid]) and not uid in visited]
+                new_adj = [uid for uid in current.adj \
+                    if node_filter(self.nodes[uid]) and not uid in visited]
                 new_node = node_map(copy.deepcopy(current))
                 new_node.adj = new_adj
                 visited.add(current_uid)
