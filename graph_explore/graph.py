@@ -2,16 +2,15 @@ import copy
 import sets
 import pandas as pd
 import Queue
-from pprint import pprint
 
 tautology = lambda n: True
 identity = lambda n: n
 
 class Node(object):
-    """docstring for Node."""
-    def __init__(self, data = None, adj = []):
+    """Node with uid and adjacency list."""
+    def __init__(self, data = None, adj=None):
         self.data = data
-        self.adj = adj
+        self.adj = [] if adj == None else adj
 
     def add_adjacent(self, uid):
         self.adj.append(uid)
@@ -24,9 +23,9 @@ class Node(object):
             .replace('\n', '\n\t') + "\n} -> " + str(self.adj)
 
 class Graph(object):
-    """Adjacency list graph."""
-    def __init__(self, nodes = {}):
-        self.nodes = nodes
+    """Adjacency list digraph."""
+    def __init__(self, nodes=None):
+        self.nodes = {} if nodes == None else nodes
 
     def add_node(self, uid, node):
         self.nodes[uid] = node
@@ -44,13 +43,19 @@ class Graph(object):
         return self.nodes[uid]
 
     @staticmethod
-    def from_csv(nodes_path, edges_path):
+    def from_csv(nodes_path, edges_path, log=False):
         nodes = pd.DataFrame.from_csv(nodes_path)
         edges = pd.DataFrame.from_csv(edges_path)
 
         nodes = dict(map(Graph.create_node, nodes.iterrows()))
+        prev_node1 = -1
         for node1, node2 in edges.itertuples():
             nodes[node1].add_adjacent(node2)
+            if log and prev_node1 != node1 != -1:
+                print "Node {0} has {1} adjacent nodes" \
+                    .format(prev_node1, len(nodes[node1].adj))
+            prev_node1 = node1
+
         start_uid = nodes.iterkeys().next()
         return Graph(nodes), start_uid
 
